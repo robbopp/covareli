@@ -21,7 +21,7 @@ Replace the current WordPress site covareli.ro (car rental business in Baciu, Cl
 ## Architecture
 
 ```
-[Browser] ──→ [Caddy reverse proxy, HTTPS via Let's Encrypt]
+[Browser] ──→ [nginx reverse proxy, HTTPS via Let's Encrypt (certbot)]
                  ├──→ [Next.js :3000]  public site (SSR) + /admin dashboard
                  │        │ SSR fetch + client fetch
                  │        ▼
@@ -30,8 +30,9 @@ Replace the current WordPress site covareli.ro (car rental business in Baciu, Cl
                       [MongoDB]  + Docker volume for car images
 ```
 
-- Four services in `docker-compose.yml`: `caddy`, `frontend` (Next.js, TypeScript), `backend` (FastAPI, Python 3.12, Motor/Beanie for MongoDB), `mongo`.
-- Caddy terminates TLS; all public traffic over HTTPS (avoids the http→301 dropped-POST-body class of bugs).
+- Four services in `docker-compose.yml`: `nginx`, `frontend` (Next.js, TypeScript), `backend` (FastAPI, Python 3.12, Motor/Beanie for MongoDB), `mongo`. Certificates via certbot (webroot challenge through nginx, auto-renewal by cron or a certbot sidecar container).
+- nginx terminates TLS; all public traffic over HTTPS (avoids the http→301 dropped-POST-body class of bugs).
+- Secrets (Netopia keys, SMTP, JWT secret, Mongo credentials) are environment variables defined in `docker-compose.yml` (values supplied via an untracked `.env` file referenced by compose; `.env.example` committed).
 - **Images**: uploaded from the dashboard, stored on a Docker volume, resized at upload time into card and full variants (Pillow), served by the backend. No external object storage (fleet is ~10–20 cars).
 - **Admin auth**: email + password → JWT in an httpOnly, Secure cookie. Passwords hashed with bcrypt. Login rate-limited.
 - **i18n**: `next-intl`; static copy in `messages/ro.json` and `messages/en.json`; dynamic content (descriptions, feature lists, location names) stored as `{ro, en}` objects in MongoDB.
@@ -41,7 +42,7 @@ Replace the current WordPress site covareli.ro (car rental business in Baciu, Cl
 ```
 covareli/
   docker-compose.yml
-  Caddyfile
+  nginx/          nginx config
   backend/        FastAPI app, tests (pytest)
   frontend/       Next.js app (App Router, TypeScript, Tailwind)
   docs/superpowers/specs/
@@ -54,7 +55,7 @@ covareli/
 - **bookings**: car_id, customer {name, email, phone}, pickup {datetime, location_id}, dropoff {datetime, location_id}, price_breakdown {days, tier_price, car_total, pickup_fee, dropoff_fee, total}, status, netopia_ref, admin_notes, timestamps.
   - Status flow: `pending_payment` → `paid` → `confirmed` → `completed`; `cancelled` reachable from any non-completed state.
 - **contact_messages**: name, email, phone, message, created_at, read flag.
-- **settings** (singleton): payment_mode (`full` now; `advance_percent` / `fixed_deposit` reserved), advance_value, site contact details (phone, email, address). Netopia credentials (signature, API key, sandbox flag) and SMTP config live in environment variables, not in the database.
+- **settings** (singleton): payment_mode (`full` now; `advance_percent` / `fixed_deposit` reserved), advance_value, site contact details (phone, email, address). Netopia credentials (signature, API key, sandbox flag) and SMTP config live in environment variables set in `docker-compose.yml`, not in the database.
 - **admin_users**: email, password_hash.
 
 ### Availability rule
@@ -90,7 +91,7 @@ Login page → sidebar layout. Sections:
 - **Cars**: list + create/edit/delete; all fields incl. drag & drop image upload with reordering; price tier editor; active toggle (hide from site without deleting).
 - **Locations**: CRUD with RO/EN name, address, fee, active toggle, ordering.
 - **Messages**: contact form inbox, read/unread toggle.
-- **Settings**: payment mode (full now; advance options visible but the alternative modes ship later), site contact details, change password. Netopia/SMTP secrets configured via environment variables, not the UI.
+- **Settings**: payment mode (full now; advance options visible but the alternative modes ship later), site contact details, change password. Netopia/SMTP secrets configured via environment variables in `docker-compose.yml`, not the UI.
 
 ## Error Handling
 
