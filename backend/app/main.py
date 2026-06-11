@@ -7,8 +7,9 @@ from app.db import init_db
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    await init_db()
+    client = await init_db()
     yield
+    client.close()
 
 
 app = FastAPI(title="Covareli API", lifespan=lifespan)

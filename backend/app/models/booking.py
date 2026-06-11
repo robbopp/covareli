@@ -1,6 +1,7 @@
 from datetime import datetime
 from enum import Enum
 
+import pymongo
 from beanie import Document, PydanticObjectId
 from pydantic import BaseModel, Field
 
@@ -45,3 +46,6 @@ class Booking(Document):
 
     class Settings:
         name = "bookings"
+        indexes = [
+            pymongo.IndexModel([("car_id", pymongo.ASCENDING), ("pickup_at", pymongo.ASCENDING)]),
+        ]

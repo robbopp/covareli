@@ -1,4 +1,6 @@
-from beanie import Document
+from typing import Annotated
+
+from beanie import Document, Indexed
 from pydantic import Field
 
 from app.models.common import BodyType, FuelType, LocalizedStr, PriceTier, Transmission
@@ -20,7 +22,7 @@ class Car(Document):
     price_tiers: list[PriceTier] = Field(default_factory=list)
     deposit_info: LocalizedStr = Field(default_factory=LocalizedStr)
     active: bool = True
-    slug: str
+    slug: Annotated[str, Indexed(unique=True)]
 
     class Settings:
         name = "cars"
