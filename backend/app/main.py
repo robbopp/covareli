@@ -9,6 +9,7 @@ from app.config import config
 from app.db import init_db
 from app.routers.admin_cars import router as admin_cars_router
 from app.routers.admin_locations import router as admin_locations_router
+from app.routers.public import router as public_router
 
 
 @asynccontextmanager
@@ -23,6 +24,7 @@ app = FastAPI(title="Covareli API", lifespan=lifespan)
 app.include_router(auth_router)
 app.include_router(admin_locations_router)
 app.include_router(admin_cars_router)
+app.include_router(public_router)
 
 Path(config.media_dir).mkdir(parents=True, exist_ok=True)
 app.mount("/media", StaticFiles(directory=config.media_dir), name="media")
