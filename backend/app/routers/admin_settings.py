@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, EmailStr, Field
 
 from app.auth.deps import require_admin
 from app.models import SiteSettings
@@ -15,9 +15,9 @@ router = APIRouter(
 class SettingsBody(BaseModel):
     payment_mode: PaymentMode
     advance_value: int = Field(ge=0)
-    contact_phone: str
-    contact_email: str
-    contact_address: str
+    contact_phone: str = Field(max_length=30)
+    contact_email: EmailStr
+    contact_address: str = Field(max_length=500)
 
 
 def serialize(s: SiteSettings) -> dict:

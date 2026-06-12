@@ -68,3 +68,16 @@ async def test_public_site_info(api):
     assert resp.status_code == 200
     body = resp.json()
     assert "contact_phone" in body and "payment_mode" in body
+
+
+async def test_settings_require_auth(api):
+    resp = await api.get("/api/admin/settings")
+    assert resp.status_code == 401
+
+
+async def test_mark_read_nonexistent_returns_404(admin):
+    resp = await admin.put(
+        "/api/admin/messages/000000000000000000000001/read",
+        json={"read": True},
+    )
+    assert resp.status_code == 404
