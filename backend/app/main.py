@@ -14,6 +14,10 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Covareli API", lifespan=lifespan)
 
+from app.auth.routes import router as auth_router
+
+app.include_router(auth_router)
+
 
 @app.get("/api/health")
 async def health():
