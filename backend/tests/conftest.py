@@ -1,10 +1,19 @@
+import pytest
 import pytest_asyncio
 from beanie import init_beanie
 from httpx import ASGITransport, AsyncClient
 from mongomock_motor import AsyncMongoMockClient
 
+import app.auth.routes as auth_routes
 from app.main import app
 from app.models import ALL_MODELS
+
+
+@pytest.fixture(autouse=True)
+def clear_login_throttle():
+    auth_routes._attempts.clear()
+    yield
+    auth_routes._attempts.clear()
 
 
 @pytest_asyncio.fixture
