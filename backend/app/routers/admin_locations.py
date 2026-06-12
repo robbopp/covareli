@@ -15,10 +15,10 @@ router = APIRouter(
 
 class LocationBody(BaseModel):
     name: LocalizedStr
-    address: str = ""
+    address: str = Field(default="", max_length=500)
     fee: int = Field(default=0, ge=0)
     active: bool = True
-    sort_order: int = 0
+    sort_order: int = Field(default=0, ge=0)
 
 
 def serialize(loc: Location) -> dict:
@@ -55,7 +55,7 @@ async def create_location(body: LocationBody):
 @router.put("/{location_id}")
 async def update_location(location_id: PydanticObjectId, body: LocationBody):
     loc = await get_or_404(location_id)
-    for key, value in body:
+    for key, value in body.model_dump().items():
         setattr(loc, key, value)
     await loc.save()
     return serialize(loc)

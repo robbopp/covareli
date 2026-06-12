@@ -23,7 +23,7 @@ class CarBody(BaseModel):
     transmission: Transmission
     seats: int = Field(ge=1, le=9)
     doors: int = Field(ge=2, le=6)
-    engine: str = ""
+    engine: str = Field(default="", max_length=100)
     description: LocalizedStr = Field(default_factory=LocalizedStr)
     features: list[LocalizedStr] = Field(default_factory=list)
     price_tiers: list[PriceTier] = Field(min_length=1)
@@ -61,7 +61,7 @@ async def create_car(body: CarBody):
 @router.put("/{car_id}")
 async def update_car(car_id: PydanticObjectId, body: CarBody):
     car = await get_or_404(car_id)
-    for key, value in body:
+    for key, value in body.model_dump().items():
         setattr(car, key, value)
     await car.save()
     return serialize(car)
