@@ -4,6 +4,7 @@ from fastapi import FastAPI
 
 from app.auth.routes import router as auth_router
 from app.db import init_db
+from app.routers.admin_cars import router as admin_cars_router
 from app.routers.admin_locations import router as admin_locations_router
 
 
@@ -18,6 +19,7 @@ app = FastAPI(title="Covareli API", lifespan=lifespan)
 
 app.include_router(auth_router)
 app.include_router(admin_locations_router)
+app.include_router(admin_cars_router)
 
 
 @app.get("/api/health")
