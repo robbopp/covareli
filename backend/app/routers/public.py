@@ -1,10 +1,11 @@
 from datetime import datetime
 
 from fastapi import APIRouter, HTTPException, Query
+from pydantic import BaseModel, EmailStr, Field
 
 from app.availability import booked_ranges as get_booked_ranges
 from app.availability import car_is_available
-from app.models import Car, Location
+from app.models import Car, ContactMessage, Location, SiteSettings
 from app.models.common import BodyType, FuelType, Transmission
 
 router = APIRouter(prefix="/api", tags=["public"])
@@ -81,3 +82,29 @@ async def list_locations():
         {"id": str(loc.id), "name": loc.name.model_dump(), "address": loc.address, "fee": loc.fee}
         for loc in locs
     ]
+
+
+class ContactBody(BaseModel):
+    name: str = Field(min_length=1, max_length=200)
+    email: EmailStr
+    phone: str = Field(default="", max_length=30)
+    message: str = Field(min_length=1, max_length=5000)
+
+
+@router.post("/contact", status_code=201)
+async def submit_contact(body: ContactBody):
+    msg = ContactMessage(**body.model_dump())
+    await msg.insert()
+    return {"ok": True}
+
+
+@router.get("/site-info")
+async def site_info():
+    s = await SiteSettings.get_singleton()
+    return {
+        "payment_mode": s.payment_mode,
+        "advance_value": s.advance_value,
+        "contact_phone": s.contact_phone,
+        "contact_email": s.contact_email,
+        "contact_address": s.contact_address,
+    }
