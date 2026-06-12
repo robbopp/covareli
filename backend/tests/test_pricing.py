@@ -38,6 +38,11 @@ def test_price_per_day_no_match_raises():
         price_per_day([PriceTier(min_days=2, max_days=None, price_per_day=100)], 1)
 
 
+def test_rental_days_raises_on_reversed_dates():
+    with pytest.raises(ValueError):
+        rental_days(datetime(2026, 7, 3, 10), datetime(2026, 7, 1, 10))
+
+
 def test_quote_total_includes_location_fees():
     quote = quote_total(TIERS, datetime(2026, 7, 1, 10), datetime(2026, 7, 4, 10),
                         pickup_fee=50, dropoff_fee=0)

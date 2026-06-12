@@ -8,6 +8,9 @@ from app.timeutil import to_naive_utc
 
 def rental_days(pickup: datetime, dropoff: datetime) -> int:
     seconds = (to_naive_utc(dropoff) - to_naive_utc(pickup)).total_seconds()
+    if seconds <= 0:
+        raise ValueError("dropoff must be after pickup")
+    # seconds per day; safe because all datetimes are naive UTC
     return max(1, math.ceil(seconds / 86400))
 
 

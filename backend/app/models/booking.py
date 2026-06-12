@@ -47,5 +47,11 @@ class Booking(Document):
     class Settings:
         name = "bookings"
         indexes = [
-            pymongo.IndexModel([("car_id", pymongo.ASCENDING), ("pickup_at", pymongo.ASCENDING)]),
+            pymongo.IndexModel(
+                [
+                    ("car_id", pymongo.ASCENDING),
+                    ("pickup_at", pymongo.ASCENDING),
+                    ("dropoff_at", pymongo.ASCENDING),
+                ]
+            ),
         ]

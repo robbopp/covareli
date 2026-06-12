@@ -11,6 +11,7 @@ PENDING_HOLD_MINUTES = 30
 
 
 def _blocking_filter():
+    """Filter for bookings that block availability: paid/confirmed, or pending_payment created within the hold window."""
     hold_cutoff = utcnow() - timedelta(minutes=PENDING_HOLD_MINUTES)
     return Or(
         In(Booking.status, [BookingStatus.paid, BookingStatus.confirmed]),

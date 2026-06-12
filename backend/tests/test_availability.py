@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 from beanie import PydanticObjectId
 
-from app.availability import booked_ranges, car_is_available
+from app.availability import PENDING_HOLD_MINUTES, booked_ranges, car_is_available
 from app.models import Booking, BookingStatus, Customer, PriceBreakdown
 from app.timeutil import utcnow
 
@@ -71,6 +71,16 @@ async def test_cancelled_booking_does_not_block(db):
     )
 
 
+async def test_completed_booking_does_not_block(db):
+    car_id = PydanticObjectId()
+    await make_booking(
+        car_id, datetime(2026, 7, 2, 10), datetime(2026, 7, 4, 10), BookingStatus.completed
+    ).insert()
+    assert await car_is_available(
+        car_id, datetime(2026, 7, 2, 10), datetime(2026, 7, 4, 10)
+    )
+
+
 async def test_fresh_pending_payment_blocks(db):
     car_id = PydanticObjectId()
     await make_booking(
@@ -86,7 +96,7 @@ async def test_expired_pending_payment_does_not_block(db):
     car_id = PydanticObjectId()
     await make_booking(
         car_id, datetime(2026, 7, 2, 10), datetime(2026, 7, 4, 10),
-        BookingStatus.pending_payment, created_at=utcnow() - timedelta(minutes=31),
+        BookingStatus.pending_payment, created_at=utcnow() - timedelta(minutes=PENDING_HOLD_MINUTES + 1),
     ).insert()
     assert await car_is_available(
         car_id, datetime(2026, 7, 2, 10), datetime(2026, 7, 4, 10)
