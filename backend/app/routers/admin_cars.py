@@ -1,8 +1,9 @@
 from beanie import PydanticObjectId
-from fastapi import APIRouter, Depends, HTTPException, Response
+from fastapi import APIRouter, Depends, HTTPException, Response, UploadFile
 from pydantic import BaseModel, Field
 
 from app.auth.deps import require_admin
+from app.images import delete_car_image, save_car_image
 from app.models import Car
 from app.models.common import BodyType, FuelType, LocalizedStr, PriceTier, Transmission
 from app.slugs import unique_car_slug
@@ -72,3 +73,37 @@ async def delete_car(car_id: PydanticObjectId):
     car = await get_or_404(car_id)
     await car.delete()
     return Response(status_code=204)
+
+
+class ImageOrderBody(BaseModel):
+    images: list[str]
+
+
+@router.post("/{car_id}/images", status_code=201)
+async def upload_image(car_id: PydanticObjectId, file: UploadFile):
+    car = await get_or_404(car_id)
+    name = await save_car_image(str(car.id), file)
+    car.images.append(name)
+    await car.save()
+    return {"name": name, "images": car.images}
+
+
+@router.put("/{car_id}/images/order")
+async def reorder_images(car_id: PydanticObjectId, body: ImageOrderBody):
+    car = await get_or_404(car_id)
+    if sorted(body.images) != sorted(car.images):
+        raise HTTPException(status_code=400, detail="Image list does not match car images")
+    car.images = body.images
+    await car.save()
+    return {"images": car.images}
+
+
+@router.delete("/{car_id}/images/{name}")
+async def delete_image(car_id: PydanticObjectId, name: str):
+    car = await get_or_404(car_id)
+    if name not in car.images:
+        raise HTTPException(status_code=404, detail="Image not found")
+    delete_car_image(str(car.id), name)
+    car.images.remove(name)
+    await car.save()
+    return {"images": car.images}
