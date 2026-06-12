@@ -54,6 +54,18 @@ async def test_list_with_dates_excludes_booked_car(api):
     assert len(resp.json()) == 1
 
 
+async def test_list_with_only_from_returns_422(api):
+    resp = await api.get("/api/cars", params={"from": "2026-07-10T10:00:00"})
+    assert resp.status_code == 422
+
+
+async def test_list_with_to_before_from_returns_422(api):
+    resp = await api.get("/api/cars", params={
+        "from": "2026-07-10T10:00:00", "to": "2026-07-09T10:00:00"
+    })
+    assert resp.status_code == 422
+
+
 async def test_car_detail_by_slug(api):
     await make_car().insert()
     resp = await api.get("/api/cars/dacia-logan-2023")

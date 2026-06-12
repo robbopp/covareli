@@ -37,6 +37,9 @@ async def list_cars(
         query = query.find(Car.seats >= seats_min)
     cars = await query.sort("+brand", "+model").to_list()
 
+    if (from_ is None) != (to is None):
+        raise HTTPException(status_code=422, detail="'from' and 'to' must both be provided together")
+
     if from_ is not None and to is not None:
         if to <= from_:
             raise HTTPException(status_code=422, detail="'to' must be after 'from'")
@@ -75,6 +78,6 @@ async def car_booked_ranges(slug: str):
 async def list_locations():
     locs = await Location.find(Location.active == True).sort("+sort_order").to_list()  # noqa: E712
     return [
-        {"id": str(l.id), "name": l.name.model_dump(), "address": l.address, "fee": l.fee}
-        for l in locs
+        {"id": str(loc.id), "name": loc.name.model_dump(), "address": loc.address, "fee": loc.fee}
+        for loc in locs
     ]
