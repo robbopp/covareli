@@ -1,9 +1,11 @@
+import shutil
+
 from beanie import PydanticObjectId
 from fastapi import APIRouter, Depends, HTTPException, Response, UploadFile
 from pydantic import BaseModel, Field
 
 from app.auth.deps import require_admin
-from app.images import delete_car_image, save_car_image
+from app.images import car_media_dir, delete_car_image, save_car_image
 from app.models import Car
 from app.models.common import BodyType, FuelType, LocalizedStr, PriceTier, Transmission
 from app.slugs import unique_car_slug
@@ -71,6 +73,7 @@ async def update_car(car_id: PydanticObjectId, body: CarBody):
 @router.delete("/{car_id}", status_code=204)
 async def delete_car(car_id: PydanticObjectId):
     car = await get_or_404(car_id)
+    shutil.rmtree(car_media_dir(str(car.id)), ignore_errors=True)
     await car.delete()
     return Response(status_code=204)
 

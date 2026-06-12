@@ -1,6 +1,5 @@
 import io
 
-import pytest
 import pytest_asyncio
 from PIL import Image
 
@@ -59,6 +58,20 @@ async def test_upload_rejects_non_image(admin):
         files={"file": ("notes.txt", b"hello", "text/plain")},
     )
     assert resp.status_code == 415
+
+
+async def test_delete_car_removes_media_directory(admin, tmp_path):
+    car_id = await create_car(admin)
+    await admin.post(
+        f"/api/admin/cars/{car_id}/images",
+        files={"file": ("photo.png", png_bytes(), "image/png")},
+    )
+    car_dir = tmp_path / "cars" / car_id
+    assert car_dir.exists()
+
+    resp = await admin.delete(f"/api/admin/cars/{car_id}")
+    assert resp.status_code == 204
+    assert not car_dir.exists()
 
 
 async def test_reorder_and_delete_image(admin, tmp_path):
