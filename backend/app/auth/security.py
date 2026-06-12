@@ -26,6 +26,6 @@ def create_token(email: str) -> str:
 def decode_token(token: str) -> str | None:
     try:
         payload = jwt.decode(token, config.jwt_secret, algorithms=["HS256"])
-        return payload["sub"]
+        return payload.get("sub")
     except jwt.InvalidTokenError:
         return None

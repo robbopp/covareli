@@ -2,6 +2,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
+from app.auth.routes import router as auth_router
 from app.db import init_db
 
 
@@ -13,8 +14,6 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="Covareli API", lifespan=lifespan)
-
-from app.auth.routes import router as auth_router
 
 app.include_router(auth_router)
 

@@ -11,6 +11,8 @@ from app.models import AdminUser
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 
+_DUMMY_HASH = hash_password("dummy-password-for-timing-equalization")
+
 MAX_ATTEMPTS = 10
 WINDOW_SECONDS = 300
 _attempts: dict[str, list[float]] = defaultdict(list)
@@ -38,7 +40,8 @@ class ChangePasswordBody(BaseModel):
 async def login(body: LoginBody, request: Request, response: Response):
     _throttle(request.client.host if request.client else "unknown")
     user = await AdminUser.find_one(AdminUser.email == body.email)
-    if user is None or not verify_password(body.password, user.password_hash):
+    target_hash = user.password_hash if user is not None else _DUMMY_HASH
+    if not verify_password(body.password, target_hash) or user is None:
         raise HTTPException(status_code=401, detail="Invalid credentials")
     response.set_cookie(
         COOKIE_NAME,
@@ -53,7 +56,12 @@ async def login(body: LoginBody, request: Request, response: Response):
 
 @router.post("/logout")
 async def logout(response: Response):
-    response.delete_cookie(COOKIE_NAME)
+    response.delete_cookie(
+        COOKIE_NAME,
+        httponly=True,
+        secure=config.cookie_secure,
+        samesite="lax",
+    )
     return {"ok": True}
 
 

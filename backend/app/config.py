@@ -1,3 +1,6 @@
+import warnings
+
+from pydantic import model_validator
 from pydantic_settings import BaseSettings
 
 
@@ -8,6 +11,14 @@ class AppConfig(BaseSettings):
     jwt_expires_hours: int = 12
     cookie_secure: bool = False
     media_dir: str = "media"
+
+    @model_validator(mode="after")
+    def _warn_short_jwt_secret(self):
+        if len(self.jwt_secret.encode()) < 32:
+            warnings.warn(
+                "jwt_secret is shorter than 32 bytes; set a 32+ byte JWT_SECRET before production deploy."
+            )
+        return self
 
 
 config = AppConfig()

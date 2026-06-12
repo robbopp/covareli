@@ -1,4 +1,7 @@
+import jwt as pyjwt
+
 from app.auth.security import create_token, decode_token, hash_password, verify_password
+from app.config import config
 from app.models import AdminUser
 
 
@@ -13,6 +16,11 @@ def test_jwt_roundtrip():
     token = create_token("admin@test.ro")
     assert decode_token(token) == "admin@test.ro"
     assert decode_token("garbage") is None
+
+
+def test_decode_token_without_sub_returns_none():
+    token = pyjwt.encode({"exp": 9999999999}, config.jwt_secret, algorithm="HS256")
+    assert decode_token(token) is None
 
 
 async def make_admin(email="admin@test.ro", password="secret123"):
@@ -64,3 +72,30 @@ async def test_change_password(api):
         "/api/auth/login", json={"email": "admin@test.ro", "password": "newsecret456"}
     )
     assert resp.status_code == 200
+
+
+async def test_login_throttled_after_too_many_attempts(api):
+    from app.auth.routes import MAX_ATTEMPTS, _attempts
+
+    _attempts.clear()
+    await make_admin()
+    for _ in range(MAX_ATTEMPTS):
+        resp = await api.post(
+            "/api/auth/login", json={"email": "admin@test.ro", "password": "nope"}
+        )
+        assert resp.status_code == 401
+    resp = await api.post(
+        "/api/auth/login", json={"email": "admin@test.ro", "password": "secret123"}
+    )
+    assert resp.status_code == 429
+    _attempts.clear()
+
+
+async def test_change_password_rejects_short_password(api):
+    await make_admin()
+    await api.post("/api/auth/login", json={"email": "admin@test.ro", "password": "secret123"})
+    resp = await api.post(
+        "/api/auth/change-password",
+        json={"current_password": "secret123", "new_password": "short"},
+    )
+    assert resp.status_code == 400
