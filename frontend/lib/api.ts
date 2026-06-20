@@ -2,6 +2,7 @@ import type {
   BookedRange,
   BookingCreateRequest,
   BookingCreateResponse,
+  BookingStatus,
   Car,
   CarsFilter,
   ContactRequest,
@@ -9,12 +10,14 @@ import type {
   SiteInfo,
 } from './types';
 
+function getBase(): string {
+  return typeof window === 'undefined'
+    ? (process.env.BACKEND_URL ?? 'http://localhost:8000')
+    : (process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000');
+}
+
 function backendUrl(path: string): string {
-  const base =
-    typeof window === 'undefined'
-      ? (process.env.BACKEND_URL ?? 'http://localhost:8000')
-      : (process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000');
-  return `${base}${path}`;
+  return `${getBase()}${path}`;
 }
 
 async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
@@ -40,11 +43,7 @@ export class ApiError extends Error {
 }
 
 export function mediaUrl(filename: string): string {
-  const base =
-    typeof window === 'undefined'
-      ? (process.env.BACKEND_URL ?? 'http://localhost:8000')
-      : (process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000');
-  return `${base}/media/${filename}`;
+  return `${getBase()}/media/${filename}`;
 }
 
 export async function getCars(filter: CarsFilter = {}): Promise<Car[]> {
@@ -52,7 +51,7 @@ export async function getCars(filter: CarsFilter = {}): Promise<Car[]> {
   if (filter.body_type) params.set('body_type', filter.body_type);
   if (filter.fuel) params.set('fuel', filter.fuel);
   if (filter.transmission) params.set('transmission', filter.transmission);
-  if (filter.seats_min) params.set('seats_min', String(filter.seats_min));
+  if (filter.seats_min != null) params.set('seats_min', String(filter.seats_min));
   if (filter.from) params.set('from', filter.from);
   if (filter.to) params.set('to', filter.to);
   const qs = params.toString();
@@ -93,6 +92,6 @@ export async function submitContact(data: ContactRequest): Promise<void> {
 
 export async function getBookingStatus(
   bookingId: string,
-): Promise<{ status: string; booking_id: string }> {
+): Promise<{ status: BookingStatus; booking_id: string }> {
   return apiFetch(`/api/bookings/${bookingId}/status`);
 }
