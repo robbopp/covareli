@@ -29,8 +29,8 @@ app = FastAPI(title="Covareli API", lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=config.cors_origins,
-    allow_methods=["GET", "POST", "PATCH"],
-    allow_headers=["Content-Type"],
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE"],
+    allow_headers=["Content-Type", "Authorization"],
     allow_credentials=True,
 )
 
