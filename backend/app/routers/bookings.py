@@ -1,4 +1,3 @@
-import logging
 from datetime import datetime
 
 from beanie import PydanticObjectId
@@ -10,7 +9,6 @@ from app.models import Booking, BookingStatus, Car, Customer, Location
 from app.pricing import quote_total
 
 router = APIRouter(prefix="/api", tags=["bookings"])
-logger = logging.getLogger(__name__)
 
 
 class BookingRequest(BaseModel):
