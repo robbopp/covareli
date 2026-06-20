@@ -11,7 +11,7 @@ class PaymentMode(str, Enum):
 
 class SiteSettings(Document):
     payment_mode: PaymentMode = PaymentMode.full
-    advance_value: int = 0  # percent or RON depending on mode
+    advance_value: int = 0
     contact_phone: str = "+40 749 323 172"
     contact_email: str = "office@covareli.ro"
     contact_address: str = "Str. Jupiter, nr. 1/12, Baciu, Cluj"
@@ -24,6 +24,9 @@ class SiteSettings(Document):
         existing = await cls.find_one({})
         if existing:
             return existing
-        created = cls()
-        await created.insert()
-        return created
+        defaults = cls()
+        doc = defaults.model_dump(exclude={"id", "revision_id"})
+        await cls.get_motor_collection().update_one(
+            {}, {"$setOnInsert": doc}, upsert=True
+        )
+        return await cls.find_one({})

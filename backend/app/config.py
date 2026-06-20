@@ -12,6 +12,10 @@ class AppConfig(BaseSettings):
     cookie_secure: bool = False
     media_dir: str = "media"
 
+    # Public URLs (used in Netopia redirect + IPN URLs — set when Netopia is integrated)
+    frontend_url: str = "http://localhost:3000"
+    backend_url: str = "http://localhost:8000"
+
     @model_validator(mode="after")
     def _warn_short_jwt_secret(self):
         if len(self.jwt_secret.encode()) < 32:
