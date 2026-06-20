@@ -1,1 +1,157 @@
-{ "site": { "name": "Covareli" } }
+{
+  "site": {
+    "name": "Covareli",
+    "tagline": "Închirieri auto Cluj-Napoca"
+  },
+  "nav": {
+    "home": "Acasă",
+    "cars": "Mașini",
+    "about": "Despre noi",
+    "contact": "Contact",
+    "booking": "Rezervare"
+  },
+  "home": {
+    "hero": {
+      "title": "Închiriați o mașină în Cluj-Napoca",
+      "subtitle": "Flota noastră modernă vă așteaptă. Prețuri clare, fără surprize.",
+      "cta": "Caută mașini disponibile"
+    },
+    "search": {
+      "pickup_location": "Locație preluare",
+      "dropoff_location": "Locație returnare",
+      "pickup_date": "Data preluare",
+      "dropoff_date": "Data returnare",
+      "search_button": "Caută"
+    },
+    "benefits": {
+      "title": "De ce Covareli?",
+      "items": [
+        { "title": "Prețuri transparente", "desc": "Fără taxe ascunse. Plătiți exact ce vedeți." },
+        { "title": "Mașini îngrijite", "desc": "Flotă întreținută regulat, verificată înainte de fiecare închiriere." },
+        { "title": "Preluare flexibilă", "desc": "Aeroport, centru Cluj sau la sediul nostru din Baciu." },
+        { "title": "Rezervare online", "desc": "Rezervați în câteva minute, direct de pe telefon." }
+      ]
+    },
+    "how": {
+      "title": "Cum funcționează?",
+      "steps": [
+        { "step": "1", "title": "Alege mașina", "desc": "Filtrează după tip, combustibil sau buget și găsește mașina potrivită." },
+        { "step": "2", "title": "Completează datele", "desc": "Introduceți datele personale și locațiile de preluare și returnare." },
+        { "step": "3", "title": "Confirmați și mergeți", "desc": "Primiți confirmarea pe email și vă așteptăm la data aleasă." }
+      ]
+    },
+    "cta": {
+      "title": "Gata să rezervați?",
+      "subtitle": "Sunați-ne sau rezervați direct online.",
+      "phone_label": "Sunați acum",
+      "browse_label": "Vezi toate mașinile"
+    }
+  },
+  "cars": {
+    "title": "Parcul auto",
+    "subtitle": "Alegeți mașina care vi se potrivește",
+    "from_price": "de la {price} lei/zi",
+    "seats": "{n} locuri",
+    "doors": "{n} uși",
+    "transmission_manual": "Manuală",
+    "transmission_automatic": "Automată",
+    "fuel_petrol": "Benzină",
+    "fuel_diesel": "Motorină",
+    "fuel_hybrid": "Hibrid",
+    "fuel_electric": "Electric",
+    "body_hatchback": "Hatchback",
+    "body_sedan": "Sedan",
+    "body_suv": "SUV",
+    "body_van": "Van",
+    "body_wagon": "Break",
+    "details_button": "Vezi detalii",
+    "book_button": "Rezervă",
+    "no_results": "Nicio mașină disponibilă pentru criteriile selectate.",
+    "filters": {
+      "title": "Filtrează",
+      "body_type": "Tip caroserie",
+      "fuel": "Combustibil",
+      "transmission": "Transmisie",
+      "seats_min": "Locuri min.",
+      "all": "Toate",
+      "reset": "Resetează filtrele"
+    }
+  },
+  "car_detail": {
+    "specs": "Specificații",
+    "features": "Dotări",
+    "pricing": "Prețuri",
+    "pricing_days": "{min}–{max} zile",
+    "pricing_days_plus": "{min}+ zile",
+    "pricing_per_day": "{price} lei/zi",
+    "deposit": "Garanție",
+    "book_button": "Rezervă această mașină",
+    "availability": "Disponibilitate",
+    "booked": "Rezervat",
+    "select_dates": "Selectați perioadele de mai sus pentru a rezerva"
+  },
+  "checkout": {
+    "title": "Rezervare",
+    "summary": "Sumar rezervare",
+    "car": "Mașina",
+    "period": "Perioadă",
+    "pickup": "Preluare",
+    "dropoff": "Returnare",
+    "days": "{n} zile",
+    "price_per_day": "{price} lei/zi",
+    "location_fee": "Taxă locație",
+    "total": "Total",
+    "customer_title": "Datele dumneavoastră",
+    "name": "Nume complet",
+    "email": "Email",
+    "phone": "Telefon",
+    "submit": "Confirmă rezervarea",
+    "submitting": "Se procesează...",
+    "no_car": "Nicio mașină selectată. Reveniți la lista de mașini.",
+    "error_generic": "A apărut o eroare. Vă rugăm încercați din nou."
+  },
+  "confirmation": {
+    "title": "Rezervare înregistrată!",
+    "message": "Rezervarea dvs. a fost înregistrată cu succes. Vă vom contacta în cel mai scurt timp pentru confirmare.",
+    "booking_id": "ID rezervare: {id}",
+    "back_home": "Înapoi acasă",
+    "contact_us": "Sunați-ne la {phone}"
+  },
+  "about": {
+    "title": "Despre noi",
+    "p1": "Covareli este o firmă de închirieri auto cu sediul în Baciu, Cluj-Napoca. Oferim servicii de calitate cu o flotă modernă și îngrijită.",
+    "p2": "Ne mândrim cu transparența prețurilor, flexibilitatea în preluare și returnare și cu relația personală cu fiecare client.",
+    "p3": "Fie că aveți nevoie de o mașină pentru o zi sau pentru mai mult timp, suntem aici să vă ajutăm.",
+    "contact_title": "Date de contact",
+    "address": "Str. Jupiter, nr. 1/12, Baciu, Cluj",
+    "phone": "+40 749 323 172",
+    "email": "office@covareli.ro"
+  },
+  "contact": {
+    "title": "Contact",
+    "subtitle": "Scrieți-ne sau sunați-ne",
+    "form_title": "Trimite un mesaj",
+    "name": "Nume",
+    "email": "Email",
+    "phone": "Telefon (opțional)",
+    "message": "Mesaj",
+    "send": "Trimite",
+    "sending": "Se trimite...",
+    "success": "Mesajul a fost trimis! Vă vom răspunde în scurt timp.",
+    "error": "A apărut o eroare. Vă rugăm încercați din nou.",
+    "info_title": "Date de contact",
+    "address": "Str. Jupiter, nr. 1/12, Baciu, Cluj",
+    "phone_val": "+40 749 323 172",
+    "email_val": "office@covareli.ro",
+    "hours": "Luni–Vineri: 08:00–18:00 | Sâmbătă: 09:00–14:00"
+  },
+  "footer": {
+    "rights": "© {year} Covareli. Toate drepturile rezervate.",
+    "links_title": "Pagini",
+    "contact_title": "Contact"
+  },
+  "errors": {
+    "not_found": "Pagina nu a fost găsită",
+    "back_home": "Înapoi acasă"
+  }
+}

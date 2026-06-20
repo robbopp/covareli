@@ -1,1 +1,157 @@
-{ "site": { "name": "Covareli" } }
+{
+  "site": {
+    "name": "Covareli",
+    "tagline": "Car Rentals Cluj-Napoca"
+  },
+  "nav": {
+    "home": "Home",
+    "cars": "Cars",
+    "about": "About",
+    "contact": "Contact",
+    "booking": "Booking"
+  },
+  "home": {
+    "hero": {
+      "title": "Rent a Car in Cluj-Napoca",
+      "subtitle": "Our modern fleet is ready for you. Clear prices, no surprises.",
+      "cta": "Find available cars"
+    },
+    "search": {
+      "pickup_location": "Pickup location",
+      "dropoff_location": "Drop-off location",
+      "pickup_date": "Pickup date",
+      "dropoff_date": "Drop-off date",
+      "search_button": "Search"
+    },
+    "benefits": {
+      "title": "Why Covareli?",
+      "items": [
+        { "title": "Transparent pricing", "desc": "No hidden fees. You pay exactly what you see." },
+        { "title": "Well-maintained cars", "desc": "Fleet regularly serviced and checked before every rental." },
+        { "title": "Flexible pickup", "desc": "Airport, Cluj city centre, or our office in Baciu." },
+        { "title": "Online booking", "desc": "Reserve in minutes, straight from your phone." }
+      ]
+    },
+    "how": {
+      "title": "How does it work?",
+      "steps": [
+        { "step": "1", "title": "Choose a car", "desc": "Filter by type, fuel, or budget and find the right car." },
+        { "step": "2", "title": "Enter your details", "desc": "Fill in your personal information and pickup/drop-off locations." },
+        { "step": "3", "title": "Confirm and go", "desc": "Receive email confirmation and we will be waiting at the agreed date." }
+      ]
+    },
+    "cta": {
+      "title": "Ready to book?",
+      "subtitle": "Call us or book directly online.",
+      "phone_label": "Call now",
+      "browse_label": "Browse all cars"
+    }
+  },
+  "cars": {
+    "title": "Our fleet",
+    "subtitle": "Choose the car that suits you",
+    "from_price": "from {price} RON/day",
+    "seats": "{n} seats",
+    "doors": "{n} doors",
+    "transmission_manual": "Manual",
+    "transmission_automatic": "Automatic",
+    "fuel_petrol": "Petrol",
+    "fuel_diesel": "Diesel",
+    "fuel_hybrid": "Hybrid",
+    "fuel_electric": "Electric",
+    "body_hatchback": "Hatchback",
+    "body_sedan": "Sedan",
+    "body_suv": "SUV",
+    "body_van": "Van",
+    "body_wagon": "Estate",
+    "details_button": "View details",
+    "book_button": "Book",
+    "no_results": "No cars available for the selected criteria.",
+    "filters": {
+      "title": "Filter",
+      "body_type": "Body type",
+      "fuel": "Fuel",
+      "transmission": "Transmission",
+      "seats_min": "Min. seats",
+      "all": "All",
+      "reset": "Reset filters"
+    }
+  },
+  "car_detail": {
+    "specs": "Specifications",
+    "features": "Features",
+    "pricing": "Pricing",
+    "pricing_days": "{min}–{max} days",
+    "pricing_days_plus": "{min}+ days",
+    "pricing_per_day": "{price} RON/day",
+    "deposit": "Deposit",
+    "book_button": "Book this car",
+    "availability": "Availability",
+    "booked": "Booked",
+    "select_dates": "Select dates above to proceed with booking"
+  },
+  "checkout": {
+    "title": "Booking",
+    "summary": "Booking summary",
+    "car": "Car",
+    "period": "Period",
+    "pickup": "Pickup",
+    "dropoff": "Drop-off",
+    "days": "{n} days",
+    "price_per_day": "{price} RON/day",
+    "location_fee": "Location fee",
+    "total": "Total",
+    "customer_title": "Your details",
+    "name": "Full name",
+    "email": "Email",
+    "phone": "Phone",
+    "submit": "Confirm booking",
+    "submitting": "Processing...",
+    "no_car": "No car selected. Return to the car list.",
+    "error_generic": "Something went wrong. Please try again."
+  },
+  "confirmation": {
+    "title": "Booking received!",
+    "message": "Your booking has been successfully registered. We will contact you shortly to confirm.",
+    "booking_id": "Booking ID: {id}",
+    "back_home": "Back to home",
+    "contact_us": "Call us at {phone}"
+  },
+  "about": {
+    "title": "About us",
+    "p1": "Covareli is a car rental company based in Baciu, Cluj-Napoca. We offer quality service with a modern, well-maintained fleet.",
+    "p2": "We pride ourselves on transparent pricing, flexible pickup and drop-off, and a personal relationship with every customer.",
+    "p3": "Whether you need a car for a day or longer, we are here to help.",
+    "contact_title": "Contact details",
+    "address": "Str. Jupiter, nr. 1/12, Baciu, Cluj",
+    "phone": "+40 749 323 172",
+    "email": "office@covareli.ro"
+  },
+  "contact": {
+    "title": "Contact",
+    "subtitle": "Write to us or give us a call",
+    "form_title": "Send a message",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone (optional)",
+    "message": "Message",
+    "send": "Send",
+    "sending": "Sending...",
+    "success": "Message sent! We will get back to you shortly.",
+    "error": "Something went wrong. Please try again.",
+    "info_title": "Contact details",
+    "address": "Str. Jupiter, nr. 1/12, Baciu, Cluj",
+    "phone_val": "+40 749 323 172",
+    "email_val": "office@covareli.ro",
+    "hours": "Mon–Fri: 08:00–18:00 | Sat: 09:00–14:00"
+  },
+  "footer": {
+    "rights": "© {year} Covareli. All rights reserved.",
+    "links_title": "Pages",
+    "contact_title": "Contact"
+  },
+  "errors": {
+    "not_found": "Page not found",
+    "back_home": "Back to home"
+  }
+}
