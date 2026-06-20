@@ -1,6 +1,5 @@
 from datetime import datetime
 
-import pytest
 import pytest_asyncio
 
 from app.models import Booking, BookingStatus, Car, Location
@@ -26,9 +25,9 @@ async def car(db):
 
 @pytest_asyncio.fixture
 async def loc(db):
-    l = Location(name=LocalizedStr(ro="Aeroport", en="Airport"), fee=50)
-    await l.insert()
-    return l
+    loc_obj = Location(name=LocalizedStr(ro="Aeroport", en="Airport"), fee=50)
+    await loc_obj.insert()
+    return loc_obj
 
 
 async def test_create_booking_happy_path(api, car, loc):
