@@ -1,17 +1,14 @@
-'use client';
-
 import Link from 'next/link';
-import { useLocale, useTranslations } from 'next-intl';
+import { getLocale, getTranslations } from 'next-intl/server';
 
-export default function Footer() {
-  const t = useTranslations('footer');
-  const locale = useLocale();
+export default async function Footer() {
+  const locale = await getLocale();
+  const t = await getTranslations({ locale, namespace: 'footer' });
   const year = new Date().getFullYear();
 
   const homePath = locale === 'ro' ? '/' : '/en';
   const carsPath = locale === 'ro' ? '/masini' : '/en/cars';
   const aboutPath = locale === 'ro' ? '/despre' : '/en/about';
-  const contactPath = '/contact';
 
   return (
     <footer className="bg-gray-900 text-gray-400 mt-auto">
@@ -28,7 +25,7 @@ export default function Footer() {
             <li><Link href={homePath} className="hover:text-white transition-colors">Acasă</Link></li>
             <li><Link href={carsPath} className="hover:text-white transition-colors">Mașini</Link></li>
             <li><Link href={aboutPath} className="hover:text-white transition-colors">Despre noi</Link></li>
-            <li><Link href={contactPath} className="hover:text-white transition-colors">Contact</Link></li>
+            <li><Link href="/contact" className="hover:text-white transition-colors">Contact</Link></li>
           </ul>
         </div>
         <div>
