@@ -15,6 +15,7 @@ class AppConfig(BaseSettings):
     # Public URLs (used in Netopia redirect + IPN URLs — set when Netopia is integrated)
     frontend_url: str = "http://localhost:3000"
     backend_url: str = "http://localhost:8000"
+    cors_origins: list[str] = ["http://localhost:3000"]
 
     @model_validator(mode="after")
     def _warn_short_jwt_secret(self):

@@ -2,6 +2,7 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from app.auth.routes import router as auth_router
@@ -24,6 +25,14 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="Covareli API", lifespan=lifespan)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=config.cors_origins,
+    allow_methods=["GET", "POST", "PATCH"],
+    allow_headers=["Content-Type"],
+    allow_credentials=True,
+)
 
 app.include_router(auth_router)
 app.include_router(admin_locations_router)
