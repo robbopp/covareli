@@ -9,7 +9,7 @@ from app.models import Booking, BookingStatus
 
 router = APIRouter(
     prefix="/api/admin/bookings",
-    tags=["admin-bookings"],
+    tags=["admin:bookings"],
     dependencies=[Depends(require_admin)],
 )
 
@@ -20,7 +20,7 @@ VALID_TRANSITIONS: dict[BookingStatus, list[BookingStatus]] = {
 }
 
 
-def serialize_booking(b: Booking) -> dict:
+def serialize(b: Booking) -> dict:
     data = b.model_dump(exclude={"id", "revision_id"})
     data["id"] = str(b.id)
     data["car_id"] = str(b.car_id)
@@ -29,10 +29,17 @@ def serialize_booking(b: Booking) -> dict:
     return data
 
 
+async def get_or_404(booking_id: PydanticObjectId) -> Booking:
+    booking = await Booking.get(booking_id)
+    if booking is None:
+        raise HTTPException(status_code=404, detail="Booking not found")
+    return booking
+
+
 @router.get("")
 async def list_bookings(
     status: BookingStatus | None = None,
-    car_id: str | None = None,
+    car_id: PydanticObjectId | None = None,
     from_: datetime | None = Query(default=None, alias="from"),
     to: datetime | None = None,
 ):
@@ -40,24 +47,19 @@ async def list_bookings(
     if status is not None:
         query = query.find(Booking.status == status)
     if car_id is not None:
-        try:
-            query = query.find(Booking.car_id == PydanticObjectId(car_id))
-        except Exception:
-            raise HTTPException(status_code=422, detail="invalid car_id")
+        query = query.find(Booking.car_id == car_id)
     if from_ is not None:
         query = query.find(Booking.pickup_at >= from_)
     if to is not None:
         query = query.find(Booking.pickup_at <= to)
     bookings = await query.sort("-created_at").to_list()
-    return [serialize_booking(b) for b in bookings]
+    return [serialize(b) for b in bookings]
 
 
 @router.get("/{booking_id}")
 async def get_booking(booking_id: PydanticObjectId):
-    booking = await Booking.get(booking_id)
-    if booking is None:
-        raise HTTPException(status_code=404, detail="Booking not found")
-    return serialize_booking(booking)
+    booking = await get_or_404(booking_id)
+    return serialize(booking)
 
 
 class TransitionBody(BaseModel):
@@ -67,9 +69,7 @@ class TransitionBody(BaseModel):
 
 @router.patch("/{booking_id}")
 async def update_booking_status(booking_id: PydanticObjectId, body: TransitionBody):
-    booking = await Booking.get(booking_id)
-    if booking is None:
-        raise HTTPException(status_code=404, detail="Booking not found")
+    booking = await get_or_404(booking_id)
 
     allowed = VALID_TRANSITIONS.get(booking.status, [])
     if body.status not in allowed:
@@ -82,4 +82,4 @@ async def update_booking_status(booking_id: PydanticObjectId, body: TransitionBo
     if body.admin_notes:
         booking.admin_notes = body.admin_notes
     await booking.save()
-    return serialize_booking(booking)
+    return serialize(booking)
