@@ -1,10 +1,24 @@
 from datetime import datetime
+from unittest.mock import AsyncMock, patch
 
+import pytest
 import pytest_asyncio
 
 from app.models import Booking, BookingStatus, Car, Location
 from app.models.booking import Customer, PriceBreakdown
 from app.models.common import BodyType, FuelType, LocalizedStr, PriceTier, Transmission
+
+FAKE_NETOPIA = {"payment_url": "https://sandbox.netopia.com/pay/test", "ntp_id": "NTP-TEST"}
+
+
+@pytest.fixture(autouse=True)
+def mock_init_payment():
+    with patch(
+        "app.routers.bookings.init_payment",
+        new_callable=AsyncMock,
+        return_value=FAKE_NETOPIA,
+    ) as m:
+        yield m
 
 
 @pytest_asyncio.fixture
@@ -46,6 +60,8 @@ async def test_create_booking_happy_path(api, car, loc):
     assert resp.status_code == 201
     data = resp.json()
     assert "booking_id" in data
+    assert "payment_url" in data
+    assert data["payment_url"] == FAKE_NETOPIA["payment_url"]
     assert "price" in data
     assert data["price"]["days"] == 2
     assert data["price"]["price_per_day"] == 200
@@ -59,6 +75,7 @@ async def test_create_booking_happy_path(api, car, loc):
     assert booking.status == BookingStatus.pending_payment
     assert booking.customer.name == "Ion Popescu"
     assert booking.customer.email == "ion@example.com"
+    assert booking.netopia_ref == FAKE_NETOPIA["ntp_id"]
 
 
 async def test_create_booking_car_not_found(api, db, loc):
@@ -181,3 +198,19 @@ async def test_booking_status_returns_current_status(api, car, loc):
 async def test_booking_status_not_found(api, db):
     resp = await api.get("/api/bookings/000000000000000000000099/status")
     assert resp.status_code == 404
+
+
+async def test_create_booking_netopia_failure_returns_502(api, car, loc, mock_init_payment):
+    mock_init_payment.side_effect = Exception("Netopia unreachable")
+    body = {
+        "car_id": str(car.id),
+        "customer_name": "Ion Popescu",
+        "customer_email": "ion@example.com",
+        "customer_phone": "0721000000",
+        "pickup_at": "2025-07-10T10:00:00",
+        "dropoff_at": "2025-07-12T10:00:00",
+        "pickup_location_id": str(loc.id),
+        "dropoff_location_id": str(loc.id),
+    }
+    resp = await api.post("/api/bookings", json=body)
+    assert resp.status_code == 502

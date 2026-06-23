@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 
 from beanie import PydanticObjectId
@@ -6,7 +7,10 @@ from pydantic import BaseModel, EmailStr, Field
 
 from app.availability import car_is_available
 from app.models import Booking, BookingStatus, Car, Customer, Location
+from app.netopia import init_payment
 from app.pricing import quote_total
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api", tags=["bookings"])
 
@@ -77,8 +81,25 @@ async def create_booking(body: BookingRequest):
     )
     await booking.insert()
 
+    try:
+        netopia = await init_payment(
+            booking_id=str(booking.id),
+            amount_ron=price.total,
+            customer_name=body.customer_name,
+            customer_email=body.customer_email,
+            customer_phone=body.customer_phone,
+            description=f"Inchiriere {car.brand} {car.model}",
+        )
+    except Exception as exc:
+        logger.error("Netopia init_payment failed for booking %s: %s", booking.id, exc)
+        raise HTTPException(status_code=502, detail="Payment gateway error")
+
+    booking.netopia_ref = netopia["ntp_id"]
+    await booking.save()
+
     return {
         "booking_id": str(booking.id),
+        "payment_url": netopia["payment_url"],
         "price": price.model_dump(),
     }
 
