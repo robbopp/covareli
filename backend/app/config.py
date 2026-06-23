@@ -12,6 +12,18 @@ class AppConfig(BaseSettings):
     cookie_secure: bool = False
     media_dir: str = "media"
 
+    # Netopia Payments v2
+    netopia_signature: str = ""
+    netopia_api_key: str = ""
+    netopia_sandbox: bool = True
+
+    # SMTP
+    smtp_host: str = ""
+    smtp_port: int = 587
+    smtp_user: str = ""
+    smtp_password: str = ""
+    smtp_from: str = "noreply@covareli.ro"
+
     # Public URLs (used in Netopia redirect + IPN URLs — set when Netopia is integrated)
     frontend_url: str = "http://localhost:3000"
     backend_url: str = "http://localhost:8000"
