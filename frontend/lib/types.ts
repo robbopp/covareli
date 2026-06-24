@@ -77,6 +77,7 @@ export interface BookingCreateRequest {
 
 export interface BookingCreateResponse {
   booking_id: string;
+  payment_url: string;
   price: PriceBreakdown;
 }
 
