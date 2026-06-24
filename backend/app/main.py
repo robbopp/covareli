@@ -14,6 +14,7 @@ from app.routers.admin_messages import router as admin_messages_router
 from app.routers.admin_settings import router as admin_settings_router
 from app.routers.admin_bookings import router as admin_bookings_router
 from app.routers.bookings import router as bookings_router
+from app.routers.netopia_ipn import router as netopia_ipn_router
 from app.routers.public import router as public_router
 
 
@@ -41,6 +42,7 @@ app.include_router(admin_messages_router)
 app.include_router(admin_settings_router)
 app.include_router(public_router)
 app.include_router(bookings_router)
+app.include_router(netopia_ipn_router)
 app.include_router(admin_bookings_router)
 
 Path(config.media_dir).mkdir(parents=True, exist_ok=True)
